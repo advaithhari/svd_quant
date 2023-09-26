@@ -10,33 +10,37 @@ pd.set_option('display.max_rows', None)
 pd.set_option('display.max_columns', None)
 pd.set_option('display.width', None)
 
-A = np.array([[-4,0],
-              [2,1],
-              [3,-2]])
-U, E, VT = svd(A)
-print(U)
-# breakpoint()
-column_rank = np.linalg.matrix_rank(U, tol=None)
-print(column_rank)
-module = getattr(__import__("SVD_Trader"),'SVD')
-# Create a sample matrix (you can replace this with your own data)
-print('processing...')
 
-df_1 = module('TSLA')
-df_2 = module('RIVN')
+# module = getattr(__import__("SVD_Trader"),'SVD')
+# Create a sample matrix (you can replace this with youru own data)
+def UExp(U, NY, NDays):
+
+
+  UExp = np.zeros((U.shape[0] * (NY + 1), U.shape[1]))
+  for Yr in range(1, NY + 1):
+    UExp[NDays * (Yr - 1) + np.arange(1, NDays + 1), :] = U + np.ones((NDays, 1)) * (Yr - 1) * (U[-1, :] - U[0, :])
+  return UExp
+
+
+
+df_1 = pd.read_csv('TSLA.csv')
+df_2 = pd.read_csv('RIVN.csv')
 print('finished')
 # print(df_1.shape)
 # print(df_2.shape)
-print(pd.concat([df_1,df_2],axis=1).shape)
+
 # Perform SVD on the matrix A
-A = pd.concat([df_2,df_1],axis=1)
-print(A)
-print(A.values)
-U, s, VT = svd(A, full_matrices=False)
+B = pd.concat([df_2,df_1],axis=1)
+C = B.to_numpy()
+
+u, s, VT = svd(C, full_matrices=False)
+bruh = np.array(u)
+
+U = pd.DataFrame(bruh)
+
+
 print(U)
-breakpoint()
-U, E, VT = svd(A)
-print(U)
+#breakpoint()
 X =[x for x in range(len(U))]
 print(len(U[0]))
 print((len(U)))
