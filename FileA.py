@@ -3,9 +3,11 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from numpy.linalg import eigh, norm,svd
 import scipy
+import scipy.io
 np.set_printoptions(threshold=np.inf)
 import itertools
 import multiprocessing
+import tables
 pd.set_option('display.max_rows', None)
 pd.set_option('display.max_columns', None)
 pd.set_option('display.width', None)
@@ -29,17 +31,21 @@ print('finished')
 # print(df_1.shape)
 # print(df_2.shape)
 
+#mat = scipy.io.loadmat('Data_0511.mat')
+#C = np.array(mat['YearDataMat'])
+#NDays = len(C)
+
 # Perform SVD on the matrix A
 B = pd.concat([df_2,df_1],axis=1)
 C = B.to_numpy()
 
 u, s, VT = svd(C, full_matrices=False)
 bruh = np.array(u)
-
+#bbruh = UExp(bruh,4,NDays)
 U = pd.DataFrame(bruh)
 
 
-print(U)
+#print(U)
 #breakpoint()
 X =[x for x in range(len(U))]
 print(len(U[0]))
@@ -57,10 +63,13 @@ for row in range(len(U)):
     # print(col)
 col1 = [f-e for (e, f) in zip(y, z)]
 col2 = [f-e for (e, f) in zip(a, b)]
-plt.plot(X, col1)
-plt.plot(X, col2)
+plt.plot(X, y)
+plt.plot(X, z)
+plt.plot(X, a)
+plt.plot(X, b)
+
 plt.show()
-print(scipy.stats.pearsonr(col1, col2))
+print(scipy.stats.pearsonr(z, b))
 
 # print(A)
 # ev, V = eigh(A.T@A)
