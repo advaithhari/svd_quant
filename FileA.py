@@ -18,9 +18,12 @@ pd.set_option('display.width', None)
 def UExp(U, NY, NDays):
 
 
-  UExp = np.zeros((U.shape[0] * (NY + 1), U.shape[1]))
-  for Yr in range(1, NY + 1):
-    UExp[NDays * (Yr - 1) + np.arange(1, NDays + 1), :] = U + np.ones((NDays, 1)) * (Yr - 1) * (U[-1, :] - U[0, :])
+  UExp = np.zeros((U.shape[0] * (NY + 1)+1, U.shape[1]))
+  print(UExp.shape)
+  for Yr in range(0, NY+1):
+    print(np.arange(1, NDays+1))
+    #print((U + np.ones((NDays, 1)) * (Yr - 1) * (U[-1, :] - U[1, :])).shape)
+    UExp[NDays * (Yr) + np.arange(1, NDays+1), :] = U + np.ones((NDays, 1)) * (Yr ) * (U[-1, :] - U[1, :])
   return UExp
 
 
@@ -31,18 +34,18 @@ print('finished')
 # print(df_1.shape)
 # print(df_2.shape)
 
-#mat = scipy.io.loadmat('Data_0511.mat')
-#C = np.array(mat['YearDataMat'])
-#NDays = len(C)
-
+# mat = scipy.io.loadmat('Data_0511.mat')
+# C = np.array(mat['YearDataMat'])
+# NDays = len(C)
+#print(NDays)
 # Perform SVD on the matrix A
 B = pd.concat([df_2,df_1],axis=1)
 C = B.to_numpy()
 
 u, s, VT = svd(C, full_matrices=False)
 bruh = np.array(u)
-#bbruh = UExp(bruh,4,NDays)
-U = pd.DataFrame(bruh)
+bbruh = UExp(bruh,2,len(C))
+U = pd.DataFrame(bbruh)
 
 
 #print(U)
@@ -55,11 +58,15 @@ y = list()
 z = list()
 a = list()
 b = list()
+c = list()
+d = list()
 for row in range(len(U)):
     y.append(U[0][row])
     z.append(U[1][row])
     a.append(U[2][row])
     b.append(U[3][row])
+    c.append(U[4][row])
+    d.append(U[5][row])
     # print(col)
 col1 = [f-e for (e, f) in zip(y, z)]
 col2 = [f-e for (e, f) in zip(a, b)]
@@ -67,7 +74,8 @@ plt.plot(X, y)
 plt.plot(X, z)
 plt.plot(X, a)
 plt.plot(X, b)
-
+plt.plot(X, c)
+plt.plot(X, d)
 plt.show()
 print(scipy.stats.pearsonr(z, b))
 
